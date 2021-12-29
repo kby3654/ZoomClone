@@ -15,7 +15,16 @@ const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer)
 
 wsServer.on('connection', socket => {
-    console.log(socket)
+    // 발생하는 모든 이벤트 캐치
+    socket.onAny((event, ...arg) => {
+        console.log(`Socket Event: ${event}, args: `, arg);
+    })
+    socket.on('enter_room', (roomName, callback) => {
+        socket.join(roomName);
+        console.log(socket.rooms)
+        // callback 함수는 front에서 실행됨
+        callback(); 
+    })
 })
 
 httpServer.listen(port, () => console.log(`Listening on http://localhost:${port}`));
