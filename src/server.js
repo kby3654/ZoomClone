@@ -24,6 +24,8 @@ wsServer.on('connection', socket => {
         console.log(socket.rooms)
         // callback 함수는 front에서 실행됨
         callback(); 
+        // 나를 제외한 방 사람에게 welcome 이벤트 실행
+        socket.to(roomName).emit('welcome')
     })
 })
 

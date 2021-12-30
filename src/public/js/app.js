@@ -27,3 +27,15 @@ function handleRoomSubmit(event) {
 }
 
 form.addEventListener('submit', handleRoomSubmit);
+
+function addMessage(message) {
+    const ul = room.querySelector('ul');
+    let li = document.createElement('li');
+    li.innerText = message;
+    ul.appendChild(li);
+    li = null;
+}
+
+socket.on('welcome', (arg) => {
+    addMessage('someOne Joined')
+})
