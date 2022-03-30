@@ -12,21 +12,21 @@ app.get('/', (_, res) => res.render('home'))
 app.get("/*", (_, res) => res.redirect("/"));
 
 const httpServer = http.createServer(app);
-const wsServer = SocketIO(httpServer)
+const wsServer = SocketIO(httpServer);
 
-wsServer.on('connection', socket => {
-    // 발생하는 모든 이벤트 캐치
-    socket.onAny((event, ...arg) => {
-        console.log(`Socket Event: ${event}, args: `, arg);
-    })
-    socket.on('enter_room', (roomName, callback) => {
+wsServer.on("connection", (socket) => {
+    socket.on("join_room", (roomName) => {
         socket.join(roomName);
-        console.log(socket.rooms)
-        // callback 함수는 front에서 실행됨
-        callback(); 
-        // 나를 제외한 방 사람에게 welcome 이벤트 실행
-        socket.to(roomName).emit('welcome')
-    })
-})
+        socket.to(roomName).emit("welcome");
+    });
+
+    socket.on("offer", (offer, roomName) => {
+        socket.to(roomName).emit("offer", offer);
+    });
+
+    socket.on("answer", (answer, roomName) => {
+        socket.to(roomName).emit("answer", answer);
+    });
+});
 
 httpServer.listen(port, () => console.log(`Listening on http://localhost:${port}`));
